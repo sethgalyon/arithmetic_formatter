@@ -1,69 +1,67 @@
 # Arithmetic Formatter
 #
-# input: list of string(s)
-#        (optional) boolean
-#            True  = solve arithmetic problem(s)
-#            False = don't solve arithmetic problem(s)
+# input:  list of string(s)
+#         (optional) boolean
+#             True  = solve arithmetic problem(s)
+#             False = don't solve arithmetic problem(s)
 #
-# output: arithmetic problem(s) printed onto terminal line
-#         formatted vertically
-#             (optional) answer to arithmetic problems
+# output: return arithmetic problem(s) string formatted vertically
+#         (optional) answer to arithmetic problems
 #             added to vertical formatting
 
-def arithmetic_formatter(problems: list = [], solve: bool = False) -> None:
+def arithmetic_formatter(problems: list = [], solve: bool = False) -> str:
     if not problems:
-        return
+        return 'Error: No problems provided.'
     
     if len(problems) > 5:
-        print('Error: Too many problems.')
-        return
+        return 'Error: Too many problems.'
 
     l1 = []
     l2 = []
     l3 = []
     l4 = []
 
-    for i, problem in enumerate(problems):
+    for problem in problems:
         if '*' in problem or '/' in problem:
-            print("Error: Operator must be '+' or '-'.")
-            return
-        
+            return "Error: Operator must be '+' or '-'."
+    
         if '+' in problem:
-            parts = problem.split('+')
+            nums = problem.split('+')
             op = '+'
         else:
-            parts = problem.split('-')
+            nums = problem.split('-')
             op = '-'
         
-        max_digits = max(map(len, parts)) - 1
+        max_digits = max(map(len, nums)) - 1
         if max_digits > 4:
-            print('Error: Numbers cannot be more than four digits.')
-            return
+            return 'Error: Numbers cannot be more than four digits.'
 
         try:
-            parts[0] = int(parts[0].strip())
-            parts[1] = int(parts[1].strip())
+            nums[0] = int(nums[0].strip())
+            nums[1] = int(nums[1].strip())
+            nums.append(0)
         except ValueError:
-            print('Error: Numbers must only contain digits.')
-            return
+            return 'Error: Numbers must only contain digits.'
         
-        if solve:
-            if '+' in problem:
-                parts.append(parts[0] + parts[1])
-            else:
-                parts.append(parts[0] - parts[1])
-        
-        l1.append(' ' * (max_digits - len(str(parts[0])) + 2) + str(parts[0]))
-        l2.append(f'{op} ' + ' ' * (max_digits - len(str(parts[1]))) + str(parts[1]))
+        l1.append(' ' * (max_digits - len(str(nums[0])) + 2) + str(nums[0]))
+        l2.append(f'{op} ' + ' ' * (max_digits - len(str(nums[1]))) + str(nums[1]))
         l3.append('-' * (max_digits + 2))
-        if solve:
-            l4.append(' ' * (max_digits - len(str(parts[2])) + 2) + str(parts[2]))
 
-    print(*l1, sep='    ')
-    print(*l2, sep='    ')
-    print(*l3, sep='    ')
+        if solve:
+            if op == '+':
+                nums[2] = nums[0] + nums[1]
+            else:
+                nums[2] = nums[0] - nums[1]
+            l4.append(' ' * (max_digits - len(str(nums[2])) + 2) + str(nums[2]))
+
+    l1 = '    '.join(l1)
+    l2 = '    '.join(l2)
+    l3 = '    '.join(l3)
     if solve: 
-        print(*l4, sep='    ')
+        l4 = '    '.join(l4)
+        return '\n'.join([l1, l2, l3, l4])
+    else:
+        return '\n'.join([l1, l2, l3])
 
 if __name__ == '__main__':
     # Expected output:
@@ -71,7 +69,7 @@ if __name__ == '__main__':
     # +  8    - 3801    + 9999    -  49
     # ----    ------    ------    -----
     #   40     -3800     19998      474
-    arithmetic_formatter(["32 + 8", "1 - 3801", "9999 + 9999", "523 - 49"], True)
+    print(arithmetic_formatter(["32 + 8", "1 - 3801", "9999 + 9999", "523 - 49"], True))
 
     print()
 
@@ -79,4 +77,4 @@ if __name__ == '__main__':
     #    32      3801      45      123
     # + 698    -    2    + 43    +  49
     # -----    ------    ----    -----
-    arithmetic_formatter(["32 + 698", "3801 - 2", "45 + 43", "123 + 49"])
+    print(arithmetic_formatter(["32 + 698", "3801 - 2", "45 + 43", "123 + 49"]))
