@@ -16,29 +16,26 @@ def arithmetic_formatter(problems: list = [], solve: bool = False) -> str:
     if len(problems) > 5:
         return 'Error: Too many problems.'
 
-    l1 = []
-    l2 = []
-    l3 = []
-    l4 = []
+    l1, l2, l3, l4 = [], [], [], []
 
     for problem in problems:
-        if '*' in problem or '/' in problem:
+        if '+' not in problem and '-' not in problem:
             return "Error: Operator must be '+' or '-'."
     
         if '+' in problem:
-            nums = problem.split('+')
+            nums = problem.replace(' ', '').split('+')
             op = '+'
         else:
-            nums = problem.split('-')
+            nums = problem.replace(' ', '').split('-')
             op = '-'
         
-        max_digits = max(map(len, nums)) - 1
+        max_digits = max(map(len, nums))
         if max_digits > 4:
             return 'Error: Numbers cannot be more than four digits.'
 
         try:
-            nums[0] = int(nums[0].strip())
-            nums[1] = int(nums[1].strip())
+            nums[0] = int(nums[0])
+            nums[1] = int(nums[1])
             nums.append(0)
         except ValueError:
             return 'Error: Numbers must only contain digits.'
@@ -78,3 +75,12 @@ if __name__ == '__main__':
     # + 698    -    2    + 43    +  49
     # -----    ------    ----    -----
     print(arithmetic_formatter(["32 + 698", "3801 - 2", "45 + 43", "123 + 49"]))
+
+    print()
+
+    # Expected output:
+    #    32      3801      45      123
+    # + 698    -    2    + 43    +  49
+    # -----    ------    ----    -----
+    #   730      3799      88      172
+    print(arithmetic_formatter(["32+698", "3801-2", "45+43", "123+49"], True))
